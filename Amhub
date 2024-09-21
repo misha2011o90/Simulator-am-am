@@ -1,0 +1,70 @@
+-- Отримуємо гравця та його персонажа
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+
+-- Створюємо ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = player:WaitForChild("PlayerGui") -- Додаємо до PlayerGui
+
+-- Створюємо TextButton
+local guiButton = Instance.new("TextButton")
+guiButton.Size = UDim2.new(0, 100, 0, 100) -- Розміри 100x100
+guiButton.Position = UDim2.new(0, 500, 0, 0) -- Позиція кнопки
+guiButton.Text = "Натисни правою кнопкою" -- Текст на кнопці
+guiButton.Parent = screenGui -- Додаємо кнопку до ScreenGui
+
+-- Змінна для підрахунку знищених кубів
+local destroyedCubes = 0
+
+-- Створюємо TextLabel для відображення кількості кубів
+local countLabel = Instance.new("TextLabel")
+countLabel.Size = UDim2.new(0, 200, 0, 50) -- Розміри 200x50
+countLabel.Position = UDim2.new(0.5, -100, 0, 20) -- Центруємо
+countLabel.Text = "Знищено кубів: " .. destroyedCubes
+countLabel.BackgroundColor3 = Color3.new(1, 1, 1) -- Білий фон
+countLabel.TextColor3 = Color3.new(0, 0, 0) -- Чорний текст
+countLabel.Parent = screenGui -- Додаємо до ScreenGui
+
+-- Функція для створення парту під гравцем
+local function createThreeBlocksUnderPlayer()
+    for i = 1, 1 do -- Змінено на 3
+        -- Створюємо новий парт
+        local part = Instance.new("Part")
+        part.Size = Vector3.new(1, 1, 1) -- Розмір парту 1x1x1
+        part.Anchored = false -- Щоб парт не падав
+        part.CanCollide = true -- Парт буде фізично взаємодіяти
+        part.Color = Color3.fromRGB(11, 219, 63) -- Колір парту
+
+        -- Встановлюємо позицію парту під гравцем
+        local playerPosition = character.HumanoidRootPart.Position
+        part.Position = Vector3.new(playerPosition.X, playerPosition.Y - (i * 2), playerPosition.Z) -- Три блоки під ногами на різній висоті
+
+        -- Додаємо Sound
+        local sound = Instance.new("Sound")
+        sound.SoundId = "rbxassetid://6748255118" -- ID звуку "Poop"
+        sound.Parent = part
+        
+        local clickDetector = Instance.new("ClickDetector")
+        clickDetector.Parent = part
+
+        -- Обробник події натискання на блок
+        clickDetector.MouseClick:Connect(function()
+            sound:Play() -- Відтворюємо звук
+            wait(sound.TimeLength) -- Чекаємо, поки звук закінчиться
+            part:Destroy()
+
+            -- Оновлюємо кількість знищених кубів
+            destroyedCubes = destroyedCubes + 1
+            countLabel.Text = "Знищено кубів: " .. destroyedCubes
+            print(destroyedCubes)
+        end)
+
+        -- Додаємо парт у гру
+        part.Parent = workspace
+    end
+end
+
+-- Відстежуємо правий клік миші на кнопку
+guiButton.MouseButton2Click:Connect(function()
+    createThreeBlocksUnderPlayer()
+end)
