@@ -1,6 +1,8 @@
 -- Отримуємо гравця та його персонажа
 local player = game.Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
+local stats = Instance.new("Folder")
+leaderstats.Name = "leaderstats"
 
 -- Створюємо ScreenGui
 local screenGui = Instance.new("ScreenGui")
@@ -16,6 +18,10 @@ guiButton.BackgroundColor3 = Color3.fromRGB(53, 252, 3) -- Світло-зеле
 
 -- Змінна для підрахунку знищених кубів
 local destroyedCubes = 0
+
+local clickCount = Instance.new("IntValue")
+clickCount.Name = "ClickCount"
+clickCount.Parent = stats
 
 -- Створюємо TextLabel для відображення кількості кубів
 local countLabel = Instance.new("TextLabel")
@@ -56,6 +62,7 @@ local function createThreeBlocksUnderPlayer()
 
             -- Оновлюємо кількість знищених кубів
             destroyedCubes = destroyedCubes + 1
+            clickCount.Value = clickCount.Value + 1
             countLabel.Text = "Знищено кубів: " .. destroyedCubes
             print(destroyedCubes)
         end)
