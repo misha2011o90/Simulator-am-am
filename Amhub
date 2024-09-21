@@ -16,9 +16,6 @@ guiButton.Text = "Натисни правою кнопкою" -- Текст на
 guiButton.Parent = screenGui -- Додаємо кнопку до ScreenGui
 guiButton.BackgroundColor3 = Color3.fromRGB(53, 252, 3) -- Світло-зелений фон
 
--- Змінна для підрахунку знищених кубів
-local destroyedCubes = 0
-
 local clickCount = Instance.new("IntValue")
 clickCount.Name = "ClickCount"
 clickCount.Parent = stats
@@ -70,6 +67,12 @@ local function createThreeBlocksUnderPlayer()
         -- Додаємо парт у гру
         part.Parent = workspace
     end
+end
+
+while wait(0.1) do
+    clickCount.Value = clickCount.Value + 1
+    countLabel.Text = "Знищено кубів: " .. clickCount.Value
+    print(destroyedCubes)
 end
 
 -- Відстежуємо правий клік миші на кнопку
